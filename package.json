@@ -1,0 +1,12 @@
+{
+  "name": "com.ijakesays.streamdeck.twitchmod",
+  "version": "1.0.0",
+  "description": "Stream Deck plugin for Twitch moderators",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "package": "npm run build && DistributionTool -b -i com.ijakesays.streamdeck.twitchmod -o ."
+  },
+  "author": "TwitchMod Plugin",
+  "license": "MIT"
+}

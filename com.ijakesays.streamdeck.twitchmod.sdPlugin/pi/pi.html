@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Twitch Moderator Tools Settings</title>
+    <link rel="stylesheet" href="css/sdpi.css">
+    <script src="js/property-inspector.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-heading">Twitch Configuration</div>
+        
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Twitch Channel</div>
+            <input class="sdpi-item-value" type="text" id="twitchChannel" placeholder="Enter channel name">
+        </div>
+        
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">OAuth Token</div>
+            <input class="sdpi-item-value" type="password" id="twitchToken" placeholder="Enter OAuth token">
+            <button class="sdpi-item-value" onclick="window.open('https://twitchapps.com/tmi/', '_blank')">Get Token</button>
+        </div>
+        
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Broadcaster ID</div>
+            <input class="sdpi-item-value" type="text" id="twitchBroadcasterId" placeholder="Enter broadcaster ID">
+        </div>
+        
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Moderator ID</div>
+            <input class="sdpi-item-value" type="text" id="twitchModeratorId" placeholder="Enter your user ID">
+        </div>
+        
+        <div class="sdpi-item">
+            <button class="sdpi-item-value" id="saveButton">Save Settings</button>
+        </div>
+        
+        <div class="sdpi-heading">Button Settings</div>
+        
+        <details>
+            <summary>Shield Mode</summary>
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">Duration (seconds)</div>
+                <input class="sdpi-item-value" type="number" id="shieldDuration" value="300" min="1" max="1800">
+            </div>
+        </details>
+        
+        <details>
+            <summary>Followers Only</summary>
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">Follow Duration (minutes)</div>
+                <input class="sdpi-item-value" type="number" id="followDuration" value="10" min="0" max="129600">
+            </div>
+        </details>
+        
+        <details>
+            <summary>Slow Mode</summary>
+            <div class="sdpi-item">
+                <div class="sdpi-item-label">Delay (seconds)</div>
+                <input class="sdpi-item-value" type="number" id="slowDelay" value="3" min="1" max="120">
+            </div>
+        </details>
+        
+        <div class="sdpi-heading">Help</div>
+        <details>
+            <summary>Getting Your IDs</summary>
+            <div class="sdpi-item">
+                <p>To get your Broadcaster and User IDs:</p>
+                <ol>
+                    <li>Go to <a href="https://www.twitch.tv/settings/profile" target="_blank">Twitch Settings</a></li>
+                    <li>Use the Twitch API or a tool like <a href="https://www.streamweasels.com/tools/convert-twitch-username-to-user-id/" target="_blank">this converter</a></li>
+                </ol>
+            </div>
+        </details>
+    </div>
+    
+    <script>
+        let websocket = null;
+        let uuid = null;
+        let actionInfo = {};
+        
+        function connectElgatoStreamDeckSocket(inPort, inPropertyInspectorUUID, inRegisterEvent, inInfo, inActionInfo) {
+            uuid = inPropertyInspectorUUID;
+            actionInfo = JSON.parse(inActionInfo);
+            
+            websocket = new WebSocket('ws://127.0.0.1:' + inPort);
+            
+            websocket.onopen = function() {
+                const json = {
+                    "event": inRegisterEvent,
+                    "uuid": inPropertyInspectorUUID
+                };
+                websocket.send(JSON.stringify(json));
+                
+                // Request settings from plugin
+                requestSettings();
+            };
+            
+            websocket.onmessage = function(evt) {
+                const jsonObj = JSON.parse(evt.data);
+                if (jsonObj.event === 'sendToPropertyInspector') {
+                    const payload = jsonObj.payload;
+                    if (payload.globalSettings) {
+                        document.getElementById('twitchChannel').value = payload.globalSettings.twitchChannel || '';
+                        document.getElementById('twitchToken').value = payload.globalSettings.twitchToken || '';
+                        document.getElementById('twitchBroadcasterId').value = payload.globalSettings.twitchBroadcasterId || '';
+                        document.getElementById('twitchModeratorId').value = payload.globalSettings.twitchModeratorId || '';
+                    }
+                    if (payload.settings) {
+                        document.getElementById('shieldDuration').value = payload.settings.shieldDuration || 300;
+                        document.getElementById('followDuration').value = payload.settings.followDuration || 10;
+                        document.getElementById('slowDelay').value = payload.settings.slowDelay || 3;
+                    }
+                }
+            };
+        }
+        
+        function requestSettings() {
+            if (websocket) {
+                const json = {
+                    "event": "getSettings",
+                    "context": uuid
+                };
+                websocket.send(JSON.stringify(json));
+            }
+        }
+        
+        // Save button handler
+        document.getElementById('saveButton').addEventListener('click', function() {
+            const globalSettings = {
+                twitchChannel: document.getElementById('twitchChannel').value,
+                twitchToken: document.getElementById('twitchToken').value,
+                twitchBroadcasterId: document.getElementById('twitchBroadcasterId').value,
+                twitchModeratorId: document.getElementById('twitchModeratorId').value
+            };
+            
+            const settings = {
+                shieldDuration: parseInt(document.getElementById('shieldDuration').value),
+                followDuration: parseInt(document.getElementById('followDuration').value),
+                slowDelay: parseInt(document.getElementById('slowDelay').value)
+            };
+            
+            // Send to plugin
+            if (websocket) {
+                const json = {
+                    "event": "sendToPlugin",
+                    "action": actionInfo.action,
+                    "context": uuid,
+                    "payload": {
+                        action: "saveGlobalSettings",
+                        ...globalSettings
+                    }
+                };
+                websocket.send(JSON.stringify(json));
+                
+                // Save button-specific settings
+                const settingsJson = {
+                    "event": "setSettings",
+                    "context": uuid,
+                    "payload": settings
+                };
+                websocket.send(JSON.stringify(settingsJson));
+            }
+        });
+        
+        // Auto-save on input change
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', function() {
+                document.getElementById('saveButton').click();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+{
+  "Actions": [
+    {
+      "Icon": "icons/shield",
+      "Name": "Shield Mode",
+      "States": [
+        {
+          "Image": "icons/shield",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Toggle Shield Mode",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.shieldmode"
+    },
+    {
+      "Icon": "icons/subscribers",
+      "Name": "Subscribers Only",
+      "States": [
+        {
+          "Image": "icons/subscribers",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Toggle Subscribers Only Chat",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.subsonly"
+    },
+    {
+      "Icon": "icons/followers",
+      "Name": "Followers Only",
+      "States": [
+        {
+          "Image": "icons/followers",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Toggle Followers Only Chat",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.followersonly"
+    },
+    {
+      "Icon": "icons/emotes",
+      "Name": "Emotes Only",
+      "States": [
+        {
+          "Image": "icons/emotes",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Toggle Emotes Only Chat",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.emotesonly"
+    },
+    {
+      "Icon": "icons/slow",
+      "Name": "Slow Mode",
+      "States": [
+        {
+          "Image": "icons/slow",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Toggle Slow Mode (3s)",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.slowmode"
+    },
+    {
+      "Icon": "icons/automod",
+      "Name": "Allow AutoMod",
+      "States": [
+        {
+          "Image": "icons/automod",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Allow most recent AutoMod message",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.allowautomod"
+    },
+    {
+      "Icon": "icons/shoutout",
+      "Name": "Auto Shoutout",
+      "States": [
+        {
+          "Image": "icons/shoutout",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Shoutout most recent raider",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.autoshoutout"
+    },
+    {
+      "Icon": "icons/rewards",
+      "Name": "Clear Rewards",
+      "States": [
+        {
+          "Image": "icons/rewards",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Clear rewards request queue",
+      "UUID": "com.ijakesays.streamdeck.twitchmod.clearrewards"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "TwitchMod Plugin",
+  "CodePath": "plugin/main.html",
+  "PropertyInspectorPath": "pi/pi.html",
+  "Description": "Stream Deck plugin for Twitch moderators",
+  "Name": "Twitch Moderator Tools",
+  "Icon": "icons/plugin",
+  "URL": "https://github.com/$GITHUB_USERNAME/$REPO_NAME",
+  "Version": "1.0.0",
+  "Software": {
+    "MinimumVersion": "5.0"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Category": "Twitch Moderator Tools",
+  "CategoryIcon": "icons/category"
+}
